@@ -1,10 +1,10 @@
 {
-  "name": "Plugin Template",
+  "name": "PowerSelectors",
   "tree": {
     "$className": "DataModel",
     "StarterGui": {
       "$className": "StarterGui",
-      "PluginTemplate": {
+      "PowerSelectors": {
         "$className": "Folder",
         "$path": "Plugin",
         "InstanceStorage": {

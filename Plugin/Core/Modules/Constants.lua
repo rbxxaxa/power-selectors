@@ -1,0 +1,11 @@
+return {
+	CAST_DEPTH = 0.01,
+	CAST_DISTANCE = 1000,
+	CAST_BUDGET = 0.5/60,
+	ADD_COLOR = Color3.fromRGB(136, 214, 0),
+	SUBTRACT_COLOR = Color3.fromRGB(250, 51, 81),
+	SELECTED_COLOR = Color3.fromRGB(43, 144, 251),
+	HOVERED_COLOR = Color3.fromRGB(43, 144, 251):lerp(Color3.new(1, 1, 1), 0.5),
+	GRID_SIZE = 1,
+	SUPER_GRID_SIZE = 4,
+}
