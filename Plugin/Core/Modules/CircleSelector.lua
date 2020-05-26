@@ -109,7 +109,9 @@ local function createRaycastCallback(cameraState)
 
 		local hit = workspace:FindPartOnRay(ray)
 		if hit and not hit.Locked then
-			return hit
+			return { hit }
+		else
+			return {}
 		end
 	end
 end
@@ -173,7 +175,7 @@ function CircleSelector:step(cameraState, inputState)
 	debug.profilebegin("CircleSelector, step sample")
 	while not self.isSamplerDone do
 		local start = tick()
-		local cached, hit = self.sampler()
+		local cached, hits = self.sampler()
 		if cached == nil then
 			self.isSamplerDone = true
 			break
@@ -182,7 +184,7 @@ function CircleSelector:step(cameraState, inputState)
 			castTime = castTime + tick() - start
 		end
 
-		if hit then
+		for _, hit in pairs(hits) do
 			if mouseDown then
 				if not self.pendingSet[hit] then
 					self.pendingSet[hit] = true
