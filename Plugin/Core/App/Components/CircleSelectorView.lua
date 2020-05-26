@@ -10,7 +10,7 @@ local SelectorHighlights = require(Components.SelectorHighlights)
 local CircleSelectorView = Roact.PureComponent:extend("CircleSelectorView")
 
 function CircleSelectorView:render()
-    return MainContext.withContext(function(MainContext)
+    return MainContext.withContext(function(mainContext)
         local mainManager = MainContext.mainManager
         if mainManager:getMode() ~= "circle" then return end
         local settings = mainManager:getSettings()
@@ -22,7 +22,7 @@ function CircleSelectorView:render()
             operation = settings.operation,
         })
 
-        local SelectorHighlights = Roact.createElement(SelectorHighlights, {
+        local selectorHighlights = Roact.createElement(SelectorHighlights, {
             hovered = selector:getHovered(),
             pending = selector:getPending(),
             operation = settings.operation,
@@ -30,7 +30,7 @@ function CircleSelectorView:render()
 
         return Roact.createFragment({
             circleMarquee,
-            SelectorHighlights
+            selectorHighlights
         })
     end)
 end
