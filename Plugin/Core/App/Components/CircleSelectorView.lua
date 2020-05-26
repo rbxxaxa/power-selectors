@@ -11,7 +11,7 @@ local CircleSelectorView = Roact.PureComponent:extend("CircleSelectorView")
 
 function CircleSelectorView:render()
     return MainContext.withContext(function(mainContext)
-        local mainManager = MainContext.mainManager
+        local mainManager = mainContext.mainManager
         if mainManager:getMode() ~= "circle" then return end
         local settings = mainManager:getSettings()
         local selector = mainManager:getSelector()
