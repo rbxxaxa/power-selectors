@@ -214,11 +214,11 @@ function CircleSelector:step(cameraState, inputState)
 	if #hoveredToAdd > 0 then
 		table.move(self.hovered, 1, #self.hovered, #hoveredToAdd+1, hoveredToAdd)
 		local newHovered = hoveredToAdd
+		local hoveredChanged = false
 		if #lastHovered ~= #newHovered then
-			self.hovered = newHovered
+			hoveredChanged = true
 		else
 			local newHoveredSet = Cryo.List.toSet(newHovered)
-			local hoveredChanged = false
 			for _, part in pairs(lastHovered) do
 				if newHoveredSet[part] == nil then
 					hoveredChanged = true
@@ -229,11 +229,11 @@ function CircleSelector:step(cameraState, inputState)
 			if next(newHoveredSet) then
 				hoveredChanged = true
 			end
-			if hoveredChanged then
-				self.hovered = newHovered
-			else
-				self.hovered = lastHovered
-			end
+		end
+		if hoveredChanged then
+			self.hovered = newHovered
+		else
+			self.hovered = lastHovered
 		end
 	end
 	debug.profileend()
