@@ -70,8 +70,8 @@ local function createCircleGenerator(centerX, centerY, radius, gridSize)
 		for i = 0, SUPER_GRID_SIZE*SUPER_GRID_SIZE-1 do
 			local xOffset = (i%SUPER_GRID_SIZE) * GRID_SIZE
 			local yOffset = math.floor(i/SUPER_GRID_SIZE) * GRID_SIZE
-			for y = minY+yOffset, maxY, gridSize*4 do
-				for x = minX+xOffset, maxX, gridSize*4 do
+			for y = minY+yOffset, maxY, gridSize*SUPER_GRID_SIZE do
+				for x = minX+xOffset, maxX, gridSize*SUPER_GRID_SIZE do
 					local distSquared = (x - centerX) ^ 2 + (y - centerY) ^ 2
 					if distSquared < radiusSquared then
 						if DEBUG_CIRCLE_GENERATOR then
