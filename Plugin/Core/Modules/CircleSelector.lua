@@ -5,6 +5,7 @@ local CameraState = require(Modules.CameraState)
 local InputState = require(Modules.InputState)
 local PairSampler = require(Modules.PairSampler)
 local Constants = require(Modules.Constants)
+local Cryo = require(PluginRoot.Libs.Cryo)
 local roundUp = Utilities.roundUp
 local roundDown = Utilities.roundDown
 
@@ -117,7 +118,6 @@ function CircleSelector.new(initialRadius, initialCameraState, initialInputState
 	local self = {}
 	setmetatable(self, CircleSelector)
 
-	self.mainEvent = Instance.new("BindableEvent")
 	self.radius = initialRadius
 	self.cameraState = initialCameraState
 	self.inputState = initialInputState
@@ -153,6 +153,7 @@ function CircleSelector:_resetSampler()
 end
 
 function CircleSelector:step(cameraState, inputState)
+	local lastHovered = self.hovered
 	if CameraState.isDifferent(self.cameraState, cameraState) then
 		self.cameraState = cameraState
 		self.inputState = inputState
@@ -165,32 +166,77 @@ function CircleSelector:step(cameraState, inputState)
 		self:_resetHovered()
 	end
 
-	local start = tick()
+	local castTime = 0
 	local mouseDown = inputState.leftMouseDown
 	local updated = false
+	local pendingToAdd, hoveredToAdd = {}, {}
+	debug.profilebegin("CircleSelector, step sample")
 	while not self.isSamplerDone do
+		local start = tick()
 		local cached, hit = self.sampler()
 		if cached == nil then
 			self.isSamplerDone = true
 			break
 		end
+		if not cached then
+			castTime = castTime + tick() - start
+		end
 
 		if hit then
 			if mouseDown then
-				self:_addPending(hit)
+				if not self.pendingSet[hit] then
+					self.pendingSet[hit] = true
+					table.insert(pendingToAdd, hit)
+				end
 			end
-			self:_addHovered(hit)
+			if not self.pendingSet[hit] and not self.hoveredSet[hit] then
+				self.hoveredSet[hit] = true
+				table.insert(hoveredToAdd, hit)
+			end
 			updated = true
 		end
 
-		if tick() - start > CAST_BUDGET then
+		if castTime > CAST_BUDGET then
 			break
 		end
 	end
+	debug.profileend()
 
-	if updated then
-		self.mainEvent:fire()
+	debug.profilebegin("CircleSelector, step tables")
+	if #pendingToAdd > 0 then
+		table.move(self.pending, 1, #self.pending, #pendingToAdd+1, pendingToAdd)
+		local newPending = pendingToAdd
+		self.pending = newPending
 	end
+
+	if #hoveredToAdd > 0 then
+		table.move(self.hovered, 1, #self.hovered, #hoveredToAdd+1, hoveredToAdd)
+		local newHovered = hoveredToAdd
+		if #lastHovered ~= #newHovered then
+			self.hovered = newHovered
+		else
+			local newHoveredSet = Cryo.List.toSet(newHovered)
+			local hoveredChanged = false
+			for _, part in pairs(lastHovered) do
+				if newHoveredSet[part] == nil then
+					hoveredChanged = true
+					break
+				end
+				newHoveredSet[part] = nil
+			end
+			if next(newHoveredSet) then
+				hoveredChanged = true
+			end
+			if hoveredChanged then
+				self.hovered = newHovered
+			else
+				self.hovered = lastHovered
+			end
+		end
+	end
+	debug.profileend()
+
+	return updated
 end
 
 function CircleSelector:getPending()
@@ -215,32 +261,11 @@ function CircleSelector:_resetHovered()
 	self.hoveredSet = {}
 end
 
-function CircleSelector:_addPending(part)
-	if not self.pendingSet[part] then
-		self.pendingSet[part] = true
-		table.insert(self.pending, part)
-	end
-end
-
-function CircleSelector:_addHovered(part)
-	if not self.hoveredSet[part] then
-		self.hoveredSet[part] = true
-		table.insert(self.hovered, part)
-	end
-end
-
 function CircleSelector:clear()
 	self:_resetSampleCache()
 	self:_resetSampler()
 	self:_resetPending()
 	self:_resetHovered()
-end
-
-function CircleSelector:subscribe(callback)
-	local connection = self.mainEvent.Event:Connect(callback)
-	return function()
-		connection:Disconnect()
-	end
 end
 
 function CircleSelector:destroy()

@@ -1,52 +1,52 @@
 local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 
-local InputContext = Roact.createContext()
+local SelectorContext = Roact.createContext()
 
-local InputController = Roact.Component:extend("InputController")
+local SelectorController = Roact.Component:extend("SelectorController")
 
-function InputController:init()
+function SelectorController:init()
 	local mainManager = self.props.mainManager
 	self.mainManager = mainManager
 
 	self:updateStateFromMainManager()
 end
 
-function InputController:updateStateFromMainManager()
+function SelectorController:updateStateFromMainManager()
 	self:setState({
-		inputState = self.mainManager:getInputState(),
+        selector = self.mainManager:getSelector() or Roact.None
 	})
 end
 
-function InputController:buildContextValue()
-	return { inputState = self.state.inputState }
+function SelectorController:buildContextValue()
+	return { selector = self.state.selector }
 end
 
-function InputController:render()
+function SelectorController:render()
 	return Roact.createElement(
-		InputContext.Provider,
+		SelectorContext.Provider,
 		{ value = self:buildContextValue() },
 		self.props[Roact.Children]
 	)
 end
 
-function InputController:didMount()
+function SelectorController:didMount()
 	self.unsubscribeFromMainManager = self.mainManager:subscribe(function()
 		self:updateStateFromMainManager()
 	end)
 end
 
-function InputController:willUnmount()
+function SelectorController:willUnmount()
 	self.unsubscribeFromMainManager()
 end
 
 local function withContext(render)
-	return Roact.createElement(InputContext.Consumer, {
+	return Roact.createElement(SelectorContext.Consumer, {
 		render = render
 	})
 end
 
 return {
-	Controller = InputController,
+	Controller = SelectorController,
 	withContext = withContext,
 }

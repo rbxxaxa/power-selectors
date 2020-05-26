@@ -39,8 +39,9 @@ function MainManager.new(plugin)
 	self.circleSelectButton = circleSelectButton
 
 	self.mainEvent = Instance.new("BindableEvent")
+	self.maid:GiveTask(self.mainEvent)
 	self.settings = {
-		circleSelectRadius = 50,
+		circleSelectRadius = 100,
 		operation = "add"
 	}
 	self.cameraState = self:_calculateCurrentCameraState()
@@ -58,10 +59,7 @@ function MainManager.new(plugin)
 	end))
 
 	plugin.Deactivation:Connect(function()
-		if self.selector then
-			self.selector:destroy()
-			self.selector = nil
-		end
+		self.selector = nil
 		self.mode = "none"
 
 		self.mainEvent:Fire()
@@ -83,11 +81,7 @@ function MainManager:_step(dt)
 		updated = true
 	end
 	if self.selector then
-		local unsubscribe = self.selector:subscribe(function()
-			updated = true
-		end)
-		self.selector:step(self.cameraState, self.inputState)
-		unsubscribe()
+		updated = self.selector:step(self.cameraState, self.inputState) or updated
 	end
 
 	if updated then
@@ -151,14 +145,6 @@ function MainManager:Destroy()
 	self.maid:Destroy()
 end
 
-function MainManager:getHoveredSelection()
-	return self.selector and self.selector:getHovered() or nil
-end
-
-function MainManager:getPendingSelection()
-	return self.selector and self.selector:getPending() or nil
-end
-
 function MainManager:getCurrentSelection()
 	if self.cachedSelection == nil then
 		self.cachedSelection = Selection:Get()
@@ -173,6 +159,10 @@ end
 
 function MainManager:getSettings()
 	return self.settings
+end
+
+function MainManager:getSelector()
+	return self.selector
 end
 
 return MainManager

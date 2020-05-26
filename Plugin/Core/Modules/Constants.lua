@@ -6,6 +6,6 @@ return {
 	SUBTRACT_COLOR = Color3.fromRGB(250, 51, 81),
 	SELECTED_COLOR = Color3.fromRGB(43, 144, 251),
 	HOVERED_COLOR = Color3.fromRGB(43, 144, 251):lerp(Color3.new(1, 1, 1), 0.5),
-	GRID_SIZE = 1,
+	GRID_SIZE = 2,
 	SUPER_GRID_SIZE = 4,
 }

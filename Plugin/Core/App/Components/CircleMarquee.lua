@@ -1,10 +1,9 @@
 local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 local Core = PluginRoot.Core
-local App = Core.App
 local Constants = require(Core.Modules.Constants)
 
-local CircleMarquee = Roact.Component:extend("CircleMarquee")
+local CircleMarquee = Roact.PureComponent:extend("CircleMarquee")
 
 local function getColorForOperation(operation)
 	return operation == "add" and Constants.ADD_COLOR or Constants.SUBTRACT_COLOR

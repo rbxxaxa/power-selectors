@@ -1,52 +1,52 @@
 local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 
-local CameraContext = Roact.createContext()
+local MainManagerContext = Roact.createContext()
 
-local CameraController = Roact.Component:extend("CameraController")
+local MainManagerController = Roact.Component:extend("MainManagerController")
 
-function CameraController:init()
+function MainManagerController:init()
 	local mainManager = self.props.mainManager
 	self.mainManager = mainManager
 
 	self:updateStateFromMainManager()
 end
 
-function CameraController:updateStateFromMainManager()
+function MainManagerController:updateStateFromMainManager()
 	self:setState({
-		cameraState = self.mainManager:getCameraState()
+		mainManager = self.mainManager
 	})
 end
 
-function CameraController:buildContextValue()
-	return { cameraState = self.state.cameraState }
+function MainManagerController:buildContextValue()
+	return { mainManager = self.state.mainManager }
 end
 
-function CameraController:render()
+function MainManagerController:render()
 	return Roact.createElement(
-		CameraContext.Provider,
+		MainManagerContext.Provider,
 		{ value = self:buildContextValue() },
 		self.props[Roact.Children]
 	)
 end
 
-function CameraController:didMount()
+function MainManagerController:didMount()
 	self.unsubscribeFromMainManager = self.mainManager:subscribe(function()
 		self:updateStateFromMainManager()
 	end)
 end
 
-function CameraController:willUnmount()
+function MainManagerController:willUnmount()
 	self.unsubscribeFromMainManager()
 end
 
 local function withContext(render)
-	return Roact.createElement(CameraContext.Consumer, {
+	return Roact.createElement(MainManagerContext.Consumer, {
 		render = render
 	})
 end
 
 return {
-	Controller = CameraController,
+	Controller = MainManagerController,
 	withContext = withContext,
 }
