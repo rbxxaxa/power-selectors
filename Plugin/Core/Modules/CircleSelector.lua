@@ -122,6 +122,7 @@ function CircleSelector.new(initialRadius, initialCameraState, initialInputState
 	local self = {}
 	setmetatable(self, CircleSelector)
 
+	self.committed = false
 	self.radius = initialRadius
 	self.cameraState = initialCameraState
 	self.inputState = initialInputState
@@ -157,6 +158,8 @@ function CircleSelector:_resetSampler()
 end
 
 function CircleSelector:step(cameraState, inputState)
+	if self.committed then return end
+
 	local lastHovered = self.hovered
 	if CameraState.isDifferent(self.cameraState, cameraState) then
 		self.cameraState = cameraState
@@ -240,6 +243,10 @@ function CircleSelector:step(cameraState, inputState)
 	end
 	debug.profileend()
 
+	if not mouseDown and #self.pending > 0 then
+		self.committed = true
+	end
+
 	return updated
 end
 
@@ -270,6 +277,7 @@ function CircleSelector:reset()
 	self:_resetSampler()
 	self:_resetPending()
 	self:_resetHovered()
+	self.committed = false
 end
 
 function CircleSelector:getRadius()
@@ -279,6 +287,10 @@ end
 function CircleSelector:setRadius(radius)
 	self.radius = radius
 	self:reset()
+end
+
+function CircleSelector:isCommitted()
+	return self.committed
 end
 
 function CircleSelector:destroy()

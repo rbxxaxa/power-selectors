@@ -7,6 +7,7 @@ local Constants = require(Modules.Constants)
 local CircleSelector = require(Modules.CircleSelector)
 local Libs = PluginRoot.Libs
 local Maid = require(Libs.Maid)
+local Cryo = require(Libs.Cryo)
 
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -81,13 +82,23 @@ function MainManager.new(plugin)
 
 	self.maid:GiveTask(UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
 		if gameProcessedEvent then return end
-		if self.mode == "none" then return end
-		if inputObject.UserInputType == Enum.UserInputType.Keyboard and
-			inputObject.KeyCode == Enum.KeyCode.LeftShift then
+		if inputObject.UserInputType == Enum.UserInputType.Keyboard then
+			local keyCode = inputObject.KeyCode
+			if keyCode == Enum.KeyCode.LeftShift and not inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and
+				self.mode ~= "none" then
 
-			self.settings.operation = self.settings.operation == "add" and "subtract" or "add"
-			self.selector:reset()
-			self.mainEvent:Fire()
+				self.settings.operation = self.settings.operation == "add" and "subtract" or "add"
+				self.selector:reset()
+				self.mainEvent:Fire()
+			elseif keyCode == Enum.KeyCode.C then
+				if inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift) and
+					inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) then
+
+					if self.mode == "none" then
+						self:activate("circle")
+					end
+				end
+			end
 		end
 	end))
 
@@ -115,11 +126,57 @@ function MainManager:_step(dt)
 	end
 	if self.selector then
 		updated = self.selector:step(self.cameraState, self.inputState) or updated
+		if self.selector:isCommitted() then
+			local pending = self.selector:getPending()
+			if self.settings.operation == "add" then
+				self:addToSelection(pending)
+			else
+				self:removeFromSelection(pending)
+			end
+			self.selector:reset()
+			updated = true
+		end
 	end
 
 	if updated then
 		self.mainEvent:Fire()
 	end
+end
+
+function MainManager:addToSelection(parts)
+	if #parts == 0 then return end
+
+	local addSet = Cryo.List.toSet(parts)
+	for _, part in pairs(self:getCurrentSelection()) do
+		addSet[part] = nil
+	end
+
+	if next(addSet) == nil then
+		return
+	end
+
+	local newSelection = Cryo.List.join(self:getCurrentSelection(), Cryo.Dictionary.keys(addSet))
+	Selection:Set(newSelection)
+end
+
+function MainManager:removeFromSelection(parts)
+	if #parts == 0 then return end
+
+	local currentParts = Cryo.List.toSet(self:getCurrentSelection())
+	local changed = false
+	for _, part in pairs(parts) do
+		if currentParts[part] then
+			changed = true
+			currentParts[part] = nil
+		end
+	end
+
+	if not changed then
+		return
+	end
+
+	local newSelection = Cryo.Dictionary.keys(currentParts)
+	Selection:Set(newSelection)
 end
 
 function MainManager:_calculateCurrentInputState()
