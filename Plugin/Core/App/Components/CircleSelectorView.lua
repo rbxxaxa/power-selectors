@@ -19,12 +19,12 @@ function CircleSelectorView:render()
         local circleMarquee = Roact.createElement(CircleMarquee, {
             position = UDim2.fromOffset(inputState.x, inputState.y),
             radius = settings.circleRadius,
-            operation = settings.operation,
         })
 
         local selectorHighlights = Roact.createElement(SelectorHighlights, {
             hovered = selector:getHovered(),
             pending = selector:getPending(),
+            selected = mainManager:getCurrentSelection(),
             operation = settings.operation,
         })
 

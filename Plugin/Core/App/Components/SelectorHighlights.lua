@@ -2,6 +2,7 @@ local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 local Core = PluginRoot.Core
 local Constants = require(Core.Modules.Constants)
+local Components = Core.App.Components
 
 local SelectorHighlights = Roact.PureComponent:extend("SelectorHighlights")
 
@@ -14,6 +15,7 @@ function SelectorHighlights:render()
 	local props = self.props
 	local hovered = props.hovered
 	local pending = props.pending
+	local selected = props.selected
 	local operation = props.operation
 
 	local boxes = {}
@@ -26,14 +28,14 @@ function SelectorHighlights:render()
 					Adornee = part,
 					SurfaceColor3 = color,
 					Color3 = color,
-					SurfaceTransparency = 0.5,
-					LineThickness = 0.05,
+					SurfaceTransparency = 0.2,
+					LineThickness = 0.1,
 				}
 			)
 		end
 	end
 	if hovered then
-		local color = Constants.SELECTED_COLOR
+		local color = getColorForOperation(operation):lerp(Constants.SELECTED_COLOR, 0.4)
 		for _, part in pairs(hovered) do
 			boxes[part] = Roact.createElement(
 				"SelectionBox",
@@ -41,10 +43,27 @@ function SelectorHighlights:render()
 					Adornee = part,
 					SurfaceColor3 = color,
 					Color3 = color,
-					SurfaceTransparency = 0.5,
-					LineThickness = 0.05,
+					SurfaceTransparency = 0.2,
+					LineThickness = 0.1,
 				}
 			)
+		end
+	end
+	if selected then
+		local color = Constants.SELECTED_COLOR
+		for _, part in pairs(selected) do
+			if not boxes[part] and part:IsA("BasePart") and not part:IsA("Terrain") then
+				boxes[part] = Roact.createElement(
+					"SelectionBox",
+					{
+						Adornee = part,
+						SurfaceColor3 = color,
+						Color3 = color,
+						SurfaceTransparency = 0.2,
+						LineThickness = 0.1,
+					}
+				)
+			end
 		end
 	end
 
