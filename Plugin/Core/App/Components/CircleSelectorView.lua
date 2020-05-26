@@ -2,7 +2,7 @@ local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 local App = PluginRoot.Core.App
 local Contexts = App.Contexts
-local MainManagerContext = require(Contexts.MainManagerContext)
+local MainContext = require(Contexts.MainContext)
 local Components = App.Components
 local CircleMarquee = require(Components.CircleMarquee)
 local SelectorHighlights = require(Components.SelectorHighlights)
@@ -10,8 +10,8 @@ local SelectorHighlights = require(Components.SelectorHighlights)
 local CircleSelectorView = Roact.PureComponent:extend("CircleSelectorView")
 
 function CircleSelectorView:render()
-    return MainManagerContext.withContext(function(mainManagerContext)
-        local mainManager = mainManagerContext.mainManager
+    return MainContext.withContext(function(MainContext)
+        local mainManager = MainContext.mainManager
         if mainManager:getMode() ~= "circle" then return end
         local settings = mainManager:getSettings()
         local selector = mainManager:getSelector()

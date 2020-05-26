@@ -1,7 +1,7 @@
 local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 
-local MainManagerContext = Roact.createContext()
+local MainContext = Roact.createContext()
 
 local MainManagerController = Roact.Component:extend("MainManagerController")
 
@@ -24,7 +24,7 @@ end
 
 function MainManagerController:render()
 	return Roact.createElement(
-		MainManagerContext.Provider,
+		MainContext.Provider,
 		{ value = self:buildContextValue() },
 		self.props[Roact.Children]
 	)
@@ -41,7 +41,7 @@ function MainManagerController:willUnmount()
 end
 
 local function withContext(render)
-	return Roact.createElement(MainManagerContext.Consumer, {
+	return Roact.createElement(MainContext.Consumer, {
 		render = render
 	})
 end
