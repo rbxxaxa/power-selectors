@@ -1,10 +1,12 @@
 local PluginRoot = script.Parent.Parent.Parent
 local Core = PluginRoot.Core
-local InputState = require(Core.Modules.InputState)
-local CameraState = require(Core.Modules.CameraState)
+local Modules = Core.Modules
+local InputState = require(Modules.InputState)
+local CameraState = require(Modules.CameraState)
+local Constants = require(Modules.Constants)
+local CircleSelector = require(Modules.CircleSelector)
 local Libs = PluginRoot.Libs
 local Maid = require(Libs.Maid)
-local CircleSelector = require(Core.Modules.CircleSelector)
 
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -41,7 +43,7 @@ function MainManager.new(plugin)
 	self.mainEvent = Instance.new("BindableEvent")
 	self.maid:GiveTask(self.mainEvent)
 	self.settings = {
-		circleSelectRadius = 100,
+		circleRadius = 100,
 		operation = "add"
 	}
 	self.cameraState = self:_calculateCurrentCameraState()
@@ -56,6 +58,37 @@ function MainManager.new(plugin)
 
 	self.maid:GiveTask(Selection.SelectionChanged:Connect(function()
 		self.cachedSelection = nil
+	end))
+
+	self.maid:GiveTask(UserInputService.InputChanged:Connect(function(inputObject, gameProcessedEvent)
+		if gameProcessedEvent then return end
+		if self.mode == "circle" and inputObject.UserInputType == Enum.UserInputType.MouseWheel and
+			inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) then
+
+			local newRadius
+			if inputObject.Position.Z > 0 then
+				newRadius = math.clamp(self.settings.circleRadius * 0.9, Constants.CIRCLE_MIN_RADIUS, Constants.CIRCLE_MAX_RADIUS)
+			else
+				newRadius = math.clamp(self.settings.circleRadius * 1.11, Constants.CIRCLE_MIN_RADIUS, Constants.CIRCLE_MAX_RADIUS)
+			end
+			if newRadius ~= self.settings.circleRadius then
+				self.settings.circleRadius = newRadius
+				self.selector:setRadius(self.settings.circleRadius)
+				self.mainEvent:Fire()
+			end
+		end
+	end))
+
+	self.maid:GiveTask(UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
+		if gameProcessedEvent then return end
+		if self.mode == "none" then return end
+		if inputObject.UserInputType == Enum.UserInputType.Keyboard and
+			inputObject.KeyCode == Enum.KeyCode.LeftShift then
+
+			self.settings.operation = self.settings.operation == "add" and "subtract" or "add"
+			self.selector:reset()
+			self.mainEvent:Fire()
+		end
 	end))
 
 	plugin.Deactivation:Connect(function()
@@ -104,7 +137,7 @@ function MainManager:activate(mode)
 	self.mode = mode
 	self.plugin:Activate(true)
 	if mode == "circle" then
-		self.selector = CircleSelector.new(self.settings.circleSelectRadius, self.cameraState, self.inputState)
+		self.selector = CircleSelector.new(self.settings.circleRadius, self.cameraState, self.inputState)
 	end
 
 	self.mainEvent:Fire()

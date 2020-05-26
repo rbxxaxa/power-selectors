@@ -265,11 +265,20 @@ function CircleSelector:_resetHovered()
 	self.hoveredSet = {}
 end
 
-function CircleSelector:clear()
+function CircleSelector:reset()
 	self:_resetSampleCache()
 	self:_resetSampler()
 	self:_resetPending()
 	self:_resetHovered()
+end
+
+function CircleSelector:getRadius()
+	return self.radius
+end
+
+function CircleSelector:setRadius(radius)
+	self.radius = radius
+	self:reset()
 end
 
 function CircleSelector:destroy()

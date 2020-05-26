@@ -18,7 +18,7 @@ function CircleSelectorView:render()
         local inputState = mainManager:getInputState()
         local circleMarquee = Roact.createElement(CircleMarquee, {
             position = UDim2.fromOffset(inputState.x, inputState.y),
-            radius = settings.circleSelectRadius,
+            radius = settings.circleRadius,
             operation = settings.operation,
         })
 
