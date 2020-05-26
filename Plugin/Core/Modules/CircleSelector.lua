@@ -33,16 +33,18 @@ local debugCircle, debugRaycast do
 		local pixel = table.remove(freePixels)
 		if not pixel then
 			pixel = Instance.new("Frame")
-			pixel.Size = UDim2.fromOffset(1, 1)
+			pixel.Size = UDim2.fromOffset(GRID_SIZE, GRID_SIZE)
 			pixel.AnchorPoint = Vector2.new(0.5, 0.5)
 			pixel.BorderSizePixel = 0
-			pixel.BackgroundColor3 = Color3.new(1, 0, 0)
 		end
+		pixel.BackgroundColor3 = Color3.new(1, 0, 0)
 		pixel.Position = UDim2.fromOffset(x, y)
 		pixel.Parent = debugCircleGui
 		coroutine.wrap(function()
 			for i = 0, 10 do
-				pixel.BackgroundTransparency = i/10
+				local per = i/10
+				pixel.BackgroundTransparency = per
+				pixel.BackgroundColor3 = Color3.new(1, 0, 0):lerp(Color3.new(0, 0, 0), per)
 				RunService.Heartbeat:Wait()
 			end
 			pixel.Parent = nil
