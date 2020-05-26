@@ -1,4 +1,4 @@
-local function create(pluginMouse, leftMouseDown, shiftDown)
+local function create(pluginMouse, leftMouseDown)
 	local x = pluginMouse.X
 	local y = pluginMouse.Y
 	return {
