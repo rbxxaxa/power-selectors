@@ -20,6 +20,7 @@ CircleSelector.__index = CircleSelector
 
 local DEBUG_CIRCLE_GENERATOR = false
 local DEBUG_RAYCAST = false
+local DEBUG_WARN_WHEN_SAMPLER_DONE = false
 
 local debugCircle, debugRaycast do
 	local CoreGui = game:GetService("CoreGui")
@@ -203,6 +204,9 @@ function CircleSelector:step(cameraState, inputState)
 		local cached, hits = self.sampler()
 		if cached == nil then
 			self.isSamplerDone = true
+			if DEBUG_WARN_WHEN_SAMPLER_DONE then
+				warn("Sampler done.")
+			end
 			break
 		end
 		if not cached then
