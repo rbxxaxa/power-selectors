@@ -86,19 +86,19 @@ local gridTraversalOrder do
 	end
 end
 
-local function createCircleGenerator(centerX, centerY, radius, gridSize)
+local function createCircleGenerator(centerX, centerY, radius)
 	local generator = coroutine.wrap(function()
 		local radiusSquared = radius * radius
 
-		local minY = roundDown(centerY - radius, gridSize)
-		local maxY = roundUp(centerY + radius, gridSize)
-		local minX = roundDown(centerX - radius, gridSize)
-		local maxX = roundUp(centerX + radius, gridSize)
+		local minY = roundDown(centerY - radius, SAMPLE_SPACING)
+		local maxY = roundUp(centerY + radius, SAMPLE_SPACING)
+		local minX = roundDown(centerX - radius, SAMPLE_SPACING)
+		local maxX = roundUp(centerX + radius, SAMPLE_SPACING)
 		for _, i in ipairs(gridTraversalOrder) do
 			local xOffset = (i%SAMPLING_GRID_SIZE) * SAMPLE_SPACING
 			local yOffset = math.floor(i/SAMPLING_GRID_SIZE) * SAMPLE_SPACING
-			for y = minY+yOffset, maxY, gridSize*SAMPLING_GRID_SIZE do
-				for x = minX+xOffset, maxX, gridSize*SAMPLING_GRID_SIZE do
+			for y = minY+yOffset, maxY, SAMPLE_SPACING*SAMPLING_GRID_SIZE do
+				for x = minX+xOffset, maxX, SAMPLE_SPACING*SAMPLING_GRID_SIZE do
 					local distSquared = (x - centerX) ^ 2 + (y - centerY) ^ 2
 					if distSquared < radiusSquared then
 						if DEBUG_CIRCLE_GENERATOR then
@@ -166,7 +166,7 @@ end
 
 function CircleSelector:_resetSampler()
 	self.raycaster = createRaycastCallback(self.cameraState)
-	self.circleGen = createCircleGenerator(self.inputState.x, self.inputState.y, self.radius, SAMPLE_SPACING)
+	self.circleGen = createCircleGenerator(self.inputState.x, self.inputState.y, self.radius)
 	self.sampler = PairSampler.create(
 		self.alreadySampled,
 		self.sampleCache,
