@@ -69,12 +69,14 @@ local gridTraversalOrder do
 	local fac = SUPER_GRID_SIZE
 	while true do
 		if fac < 1 then break end
-		for y = 0, SUPER_GRID_SIZE-1, fac do
-			for x = 0, SUPER_GRID_SIZE-1, fac do
-				local i = x + y*SUPER_GRID_SIZE
-				if not alreadyVisited[i] then
-					table.insert(gridTraversalOrder, i)
-					alreadyVisited[i] = true
+		for y = 0, SUPER_GRID_SIZE-1 do
+			for x = 0, SUPER_GRID_SIZE-1 do
+				if x%fac == 0 and y%fac == 0 then
+					local i = x + y*SUPER_GRID_SIZE
+					if not alreadyVisited[i] then
+						table.insert(gridTraversalOrder, i)
+						alreadyVisited[i] = true
+					end
 				end
 			end
 		end
