@@ -11,7 +11,9 @@ local roundDown = Utilities.roundDown
 
 local CAST_DEPTH = Constants.CAST_DEPTH
 local CAST_DISTANCE = Constants.CAST_DISTANCE
-local SAMPLER_BUDGET = Constants.SAMPLER_BUDGET
+local TURBO_SAMPLER_BUDGET = Constants.TURBO_SAMPLER_BUDGET
+local MOVING_SAMPLER_BUDGET = Constants.MOVING_SAMPLER_BUDGET
+local TIME_TO_SAMPLER_TURBO = Constants.TIME_TO_SAMPLER_TURBO
 local SAMPLE_SPACING = Constants.SAMPLE_SPACING
 local SAMPLING_GRID_SIZE = Constants.SAMPLING_GRID_SIZE
 
@@ -177,7 +179,16 @@ function CircleSelector:_resetSampler()
 			return hit
 		end
 	)
+	self.samplerCreatedTimestamp = tick()
 	self.isSamplerDone = false
+end
+
+function CircleSelector:_calculateSamplerBudget()
+	if tick() - self.samplerCreatedTimestamp > TIME_TO_SAMPLER_TURBO then
+		return TURBO_SAMPLER_BUDGET
+	else
+		return MOVING_SAMPLER_BUDGET
+	end
 end
 
 function CircleSelector:step(cameraState, inputState)
@@ -200,6 +211,7 @@ function CircleSelector:step(cameraState, inputState)
 	local mouseDown = inputState.leftMouseDown
 	local updated = false
 	local pendingToAdd, hoveredToAdd = {}, {}
+	local samplerBudget = self:_calculateSamplerBudget()
 	debug.profilebegin("CircleSelector, step sample")
 	while not self.isSamplerDone do
 		local cached, hits = self.sampler()
@@ -226,7 +238,7 @@ function CircleSelector:step(cameraState, inputState)
 		end
 
 		local timeSpentSampling = tick() - timeStartedSampling
-		if timeSpentSampling > SAMPLER_BUDGET then
+		if timeSpentSampling > samplerBudget then
 			break
 		end
 	end
