@@ -81,8 +81,6 @@ local gridTraversalOrder do
 	end
 end
 
-print(#gridTraversalOrder)
-
 local function createCircleGenerator(centerX, centerY, radius, gridSize)
 	local generator = coroutine.wrap(function()
 		local radiusSquared = radius * radius
