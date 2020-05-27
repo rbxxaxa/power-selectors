@@ -11,7 +11,7 @@ local roundDown = Utilities.roundDown
 
 local CAST_DEPTH = Constants.CAST_DEPTH
 local CAST_DISTANCE = Constants.CAST_DISTANCE
-local CAST_BUDGET = Constants.CAST_BUDGET
+local SAMPLER_BUDGET = Constants.SAMPLER_BUDGET
 local SAMPLE_SPACING = Constants.SAMPLE_SPACING
 local SAMPLING_GRID_SIZE = Constants.SAMPLING_GRID_SIZE
 
@@ -196,13 +196,12 @@ function CircleSelector:step(cameraState, inputState)
 		self:_resetHovered()
 	end
 
-	local castTime = 0
+	local timeStartedSampling = tick()
 	local mouseDown = inputState.leftMouseDown
 	local updated = false
 	local pendingToAdd, hoveredToAdd = {}, {}
 	debug.profilebegin("CircleSelector, step sample")
 	while not self.isSamplerDone do
-		local start = tick()
 		local cached, hits = self.sampler()
 		if cached == nil then
 			self.isSamplerDone = true
@@ -210,9 +209,6 @@ function CircleSelector:step(cameraState, inputState)
 				warn("Sampler done.")
 			end
 			break
-		end
-		if not cached then
-			castTime = castTime + tick() - start
 		end
 
 		for _, hit in pairs(hits) do
@@ -229,7 +225,8 @@ function CircleSelector:step(cameraState, inputState)
 			updated = true
 		end
 
-		if castTime > CAST_BUDGET then
+		local timeSpentSampling = tick() - timeStartedSampling
+		if timeSpentSampling > SAMPLER_BUDGET then
 			break
 		end
 	end
