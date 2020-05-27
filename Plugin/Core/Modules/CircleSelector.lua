@@ -61,6 +61,28 @@ local debugCircle, debugRaycast do
 	end
 end
 
+local gridTraversalOrder do
+	gridTraversalOrder = {}
+
+	local alreadyVisited = {}
+	local fac = SUPER_GRID_SIZE
+	while true do
+		if fac < 1 then break end
+		for y = 0, SUPER_GRID_SIZE-1, fac do
+			for x = 0, SUPER_GRID_SIZE-1, fac do
+				local i = x + y*SUPER_GRID_SIZE
+				if not alreadyVisited[i] then
+					table.insert(gridTraversalOrder, i)
+					alreadyVisited[i] = true
+				end
+			end
+		end
+		fac = fac/2
+	end
+end
+
+print(#gridTraversalOrder)
+
 local function createCircleGenerator(centerX, centerY, radius, gridSize)
 	local generator = coroutine.wrap(function()
 		local radiusSquared = radius * radius
@@ -69,7 +91,7 @@ local function createCircleGenerator(centerX, centerY, radius, gridSize)
 		local maxY = roundUp(centerY + radius, gridSize)
 		local minX = roundDown(centerX - radius, gridSize)
 		local maxX = roundUp(centerX + radius, gridSize)
-		for i = 0, SUPER_GRID_SIZE*SUPER_GRID_SIZE-1 do
+		for _, i in ipairs(gridTraversalOrder) do
 			local xOffset = (i%SUPER_GRID_SIZE) * GRID_SIZE
 			local yOffset = math.floor(i/SUPER_GRID_SIZE) * GRID_SIZE
 			for y = minY+yOffset, maxY, gridSize*SUPER_GRID_SIZE do

@@ -7,7 +7,7 @@ return {
 	SELECTED_COLOR = Color3.fromRGB(43, 144, 251),
 	HOVERED_COLOR = Color3.fromRGB(43, 144, 251):lerp(Color3.new(1, 1, 1), 0.5),
 	GRID_SIZE = 2,
-	SUPER_GRID_SIZE = 8,
+	SUPER_GRID_SIZE = 32,
 	CIRCLE_MIN_RADIUS = 4,
 	CIRCLE_MAX_RADIUS = 160,
 }
