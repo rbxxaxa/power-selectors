@@ -12,8 +12,8 @@ local roundDown = Utilities.roundDown
 local CAST_DEPTH = Constants.CAST_DEPTH
 local CAST_DISTANCE = Constants.CAST_DISTANCE
 local CAST_BUDGET = Constants.CAST_BUDGET
-local GRID_SIZE = Constants.GRID_SIZE
-local SUPER_GRID_SIZE = Constants.SUPER_GRID_SIZE
+local SAMPLE_SPACING = Constants.SAMPLE_SPACING
+local SAMPLING_GRID_SIZE = Constants.SAMPLING_GRID_SIZE
 
 local CircleSelector = {}
 CircleSelector.__index = CircleSelector
@@ -34,7 +34,7 @@ local debugCircle, debugRaycast do
 		local pixel = table.remove(freePixels)
 		if not pixel then
 			pixel = Instance.new("Frame")
-			pixel.Size = UDim2.fromOffset(GRID_SIZE, GRID_SIZE)
+			pixel.Size = UDim2.fromOffset(SAMPLE_SPACING, SAMPLE_SPACING)
 			pixel.AnchorPoint = Vector2.new(0.5, 0.5)
 			pixel.BorderSizePixel = 0
 		end
@@ -66,13 +66,13 @@ local gridTraversalOrder do
 	gridTraversalOrder = {}
 
 	local alreadyVisited = {}
-	local fac = SUPER_GRID_SIZE
+	local fac = SAMPLING_GRID_SIZE
 	while true do
 		if fac < 1 then break end
-		for y = 0, SUPER_GRID_SIZE-1 do
-			for x = 0, SUPER_GRID_SIZE-1 do
+		for y = 0, SAMPLING_GRID_SIZE-1 do
+			for x = 0, SAMPLING_GRID_SIZE-1 do
 				if x%fac == 0 and y%fac == 0 then
-					local i = x + y*SUPER_GRID_SIZE
+					local i = x + y*SAMPLING_GRID_SIZE
 					if not alreadyVisited[i] then
 						table.insert(gridTraversalOrder, i)
 						alreadyVisited[i] = true
@@ -93,10 +93,10 @@ local function createCircleGenerator(centerX, centerY, radius, gridSize)
 		local minX = roundDown(centerX - radius, gridSize)
 		local maxX = roundUp(centerX + radius, gridSize)
 		for _, i in ipairs(gridTraversalOrder) do
-			local xOffset = (i%SUPER_GRID_SIZE) * GRID_SIZE
-			local yOffset = math.floor(i/SUPER_GRID_SIZE) * GRID_SIZE
-			for y = minY+yOffset, maxY, gridSize*SUPER_GRID_SIZE do
-				for x = minX+xOffset, maxX, gridSize*SUPER_GRID_SIZE do
+			local xOffset = (i%SAMPLING_GRID_SIZE) * SAMPLE_SPACING
+			local yOffset = math.floor(i/SAMPLING_GRID_SIZE) * SAMPLE_SPACING
+			for y = minY+yOffset, maxY, gridSize*SAMPLING_GRID_SIZE do
+				for x = minX+xOffset, maxX, gridSize*SAMPLING_GRID_SIZE do
 					local distSquared = (x - centerX) ^ 2 + (y - centerY) ^ 2
 					if distSquared < radiusSquared then
 						if DEBUG_CIRCLE_GENERATOR then
@@ -164,7 +164,7 @@ end
 
 function CircleSelector:_resetSampler()
 	self.raycaster = createRaycastCallback(self.cameraState)
-	self.circleGen = createCircleGenerator(self.inputState.x, self.inputState.y, self.radius, GRID_SIZE)
+	self.circleGen = createCircleGenerator(self.inputState.x, self.inputState.y, self.radius, SAMPLE_SPACING)
 	self.sampler = PairSampler.create(
 		self.alreadySampled,
 		self.sampleCache,
