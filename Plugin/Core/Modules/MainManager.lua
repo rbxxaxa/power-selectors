@@ -28,7 +28,7 @@ function MainManager.new(plugin)
 	self.mouse = mouse
 
 	self.plugin = plugin
-    local toolbar = plugin:CreateToolbar("Power Selectors")
+	local toolbar = plugin:CreateToolbar("Power Selectors")
 	self.maid:GiveTask(toolbar)
 
 	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "")

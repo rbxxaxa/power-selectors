@@ -14,7 +14,7 @@ end
 
 function SelectorController:updateStateFromMainManager()
 	self:setState({
-        selector = self.mainManager:getSelector() or Roact.None
+		selector = self.mainManager:getSelector() or Roact.None
 	})
 end
 
