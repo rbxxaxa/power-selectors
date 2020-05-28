@@ -13,8 +13,13 @@ local function roundUp(n, multiple)
 	return math.floor(n/multiple + 1) * multiple
 end
 
+local function lerp(a, b, t)
+	return a * (1-t) + b * t
+end
+
 return {
 	round = round,
 	roundDown = roundDown,
-	roundUp = roundUp
+	roundUp = roundUp,
+	lerp = lerp,
 }

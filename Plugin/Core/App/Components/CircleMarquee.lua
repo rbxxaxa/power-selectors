@@ -1,12 +1,48 @@
 local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
+local Utilities = require(PluginRoot.Core.Modules.Utilities)
+
+local RunService = game:GetService("RunService")
 
 local CircleMarquee = Roact.PureComponent:extend("CircleMarquee")
+
+function CircleMarquee:init()
+	self.state = {
+		currentRadius = self.props.radius,
+		desiredRadius = self.props.radius,
+	}
+end
+
+function CircleMarquee:didMount()
+	self.hConn = RunService.Heartbeat:Connect(function(dt)
+		local currentRadius = self.state.currentRadius
+		local desiredRadius = self.state.desiredRadius
+		if currentRadius ~= desiredRadius then
+			local newRadius = Utilities.lerp(currentRadius, desiredRadius, 1 - 0.5^(dt*50))
+			if math.abs(newRadius - desiredRadius) < 1 then
+				newRadius = desiredRadius
+			end
+			self:setState({
+				currentRadius = newRadius
+			})
+		end
+	end)
+end
+
+function CircleMarquee:willUnmount()
+	self.hConn:Disconnect()
+end
+
+function CircleMarquee.getDerivedStateFromProps(nextProps, lastState)
+	return {
+		desiredRadius = nextProps.radius
+	}
+end
 
 function CircleMarquee:render()
 	local props = self.props
 	local position = props.position
-	local radius = props.radius
+	local radius = self.state.currentRadius
 
 	return Roact.createElement("ImageLabel",
 		{
