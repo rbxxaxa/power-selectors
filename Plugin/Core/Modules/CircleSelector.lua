@@ -64,6 +64,54 @@ local debugCircle, debugRaycast do
 	end
 end
 
+--[[
+	A sequence of indices in a SAMPLING_GRID_SIZE x SAMPLING_GRID_SIZE grid (0 to SAMPLING_GRID_SIZE^2-1).
+	Pattern looks like this when you iterate through it (assuming SAMPLING_GRID_SIZE is 8):
+
+	i = 1
+	x_______
+	________
+	________
+	________
+	________
+	________
+	________
+	________
+
+	i = 4
+	x___x___
+	________
+	________
+	________
+	x___x___
+	________
+	________
+	________
+
+	i = 16
+	x_x_x_x_
+	________
+	x_x_x_x_
+	________
+	x_x_x_x_
+	________
+	x_x_x_x_
+	________
+
+	i = 64
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+	xxxxxxxx
+
+	As you can see, the indices are ordered such that iterating through them results in
+	a pattern that gets more and more granular.
+	This is also the reason why SAMPLING_GRID_SIZE must be a power of 2.
+]]
 local gridTraversalOrder do
 	gridTraversalOrder = {}
 
