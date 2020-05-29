@@ -323,7 +323,9 @@ end
 
 function CircleSelector:setRadius(radius)
 	self.radius = radius
-	self:reset()
+	self:_resetSampleCache()
+	self:_resetSampler()
+	self:_resetHovered()
 end
 
 function CircleSelector:isCommitted()
