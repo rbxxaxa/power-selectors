@@ -1,7 +1,7 @@
 local function create(camera)
 	local cf = camera.CFrame
 	local viewportSize = camera.ViewportSize
-	return { 
+	return {
 		position = cf.Position,
 		look = cf.LookVector,
 		up = cf.UpVector,

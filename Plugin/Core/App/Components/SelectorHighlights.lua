@@ -2,7 +2,6 @@ local PluginRoot = script.Parent.Parent.Parent.Parent
 local Roact = require(PluginRoot.Libs.Roact)
 local Core = PluginRoot.Core
 local Constants = require(Core.Modules.Constants)
-local Components = Core.App.Components
 
 local SelectorHighlights = Roact.PureComponent:extend("SelectorHighlights")
 

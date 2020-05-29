@@ -1,6 +1,5 @@
 local PluginRoot = script.Parent.Parent
 local MainManager = require(PluginRoot.Core.Modules.MainManager)
-local Maid = require(PluginRoot.Libs.Maid)
 local Roact = require(PluginRoot.Libs.Roact)
 local MainApp = require(PluginRoot.Core.App.MainApp)
 
