@@ -209,7 +209,6 @@ function CircleSelector:step(cameraState, inputState)
 
 	local timeStartedSampling = tick()
 	local mouseDown = inputState.leftMouseDown
-	local updated = false
 	local pendingToAdd, hoveredToAdd = {}, {}
 	local samplerBudget = self:_calculateSamplerBudget()
 	debug.profilebegin("CircleSelector, step sample")
@@ -234,7 +233,6 @@ function CircleSelector:step(cameraState, inputState)
 				self.hoveredSet[hit] = true
 				table.insert(hoveredToAdd, hit)
 			end
-			updated = true
 		end
 
 		local timeSpentSampling = tick() - timeStartedSampling
@@ -245,10 +243,12 @@ function CircleSelector:step(cameraState, inputState)
 	debug.profileend()
 
 	debug.profilebegin("CircleSelector, step tables")
+	local updated = false
 	if #pendingToAdd > 0 then
 		table.move(self.pending, 1, #self.pending, #pendingToAdd+1, pendingToAdd)
 		local newPending = pendingToAdd
 		self.pending = newPending
+		updated = true
 	end
 
 	if #hoveredToAdd > 0 then
@@ -272,6 +272,7 @@ function CircleSelector:step(cameraState, inputState)
 		end
 		if hoveredChanged then
 			self.hovered = newHovered
+			updated = true
 		else
 			self.hovered = lastHovered
 		end
