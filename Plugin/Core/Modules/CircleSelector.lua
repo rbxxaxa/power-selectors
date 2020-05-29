@@ -13,7 +13,7 @@ local CAST_DEPTH = Constants.CAST_DEPTH
 local CAST_DISTANCE = Constants.CAST_DISTANCE
 local TURBO_SAMPLER_BUDGET = Constants.TURBO_SAMPLER_BUDGET
 local MOVING_SAMPLER_BUDGET = Constants.MOVING_SAMPLER_BUDGET
-local TIME_TO_SAMPLER_TURBO = Constants.TIME_TO_SAMPLER_TURBO
+local FRAMES_TO_SAMPLER_TURBO = Constants.FRAMES_TO_SAMPLER_TURBO
 local SAMPLE_SPACING = Constants.SAMPLE_SPACING
 local SAMPLING_GRID_SIZE = Constants.SAMPLING_GRID_SIZE
 
@@ -179,12 +179,12 @@ function CircleSelector:_resetSampler()
 			return hit
 		end
 	)
-	self.samplerCreatedTimestamp = tick()
+	self.samplerRunningFrames = 0
 	self.isSamplerDone = false
 end
 
 function CircleSelector:_calculateSamplerBudget()
-	if tick() - self.samplerCreatedTimestamp > TIME_TO_SAMPLER_TURBO then
+	if self.samplerRunningFrames > FRAMES_TO_SAMPLER_TURBO then
 		return TURBO_SAMPLER_BUDGET
 	else
 		return MOVING_SAMPLER_BUDGET
@@ -281,6 +281,8 @@ function CircleSelector:step(cameraState, inputState)
 	if not mouseDown and #self.pending > 0 then
 		self.committed = true
 	end
+
+	self.samplerRunningFrames = self.samplerRunningFrames+1
 
 	return updated
 end

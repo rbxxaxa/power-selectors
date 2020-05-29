@@ -18,7 +18,10 @@ function CircleMarquee:didMount()
 		local currentRadius = self.state.currentRadius
 		local desiredRadius = self.state.desiredRadius
 		if currentRadius ~= desiredRadius then
-			local newRadius = Utilities.lerp(currentRadius, desiredRadius, 1 - 0.5^(dt*50))
+			-- Decided not to use dt for this.
+			-- The frame the selector exits turbo mode, the dt will be huge.
+			-- That ruins the easing effect.
+			local newRadius = Utilities.lerp(currentRadius, desiredRadius, 0.5)
 			if math.abs(newRadius - desiredRadius) < 1 then
 				newRadius = desiredRadius
 			end
