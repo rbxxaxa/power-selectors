@@ -5,7 +5,7 @@ local CameraState = require(Modules.CameraState)
 local InputState = require(Modules.InputState)
 local PairSampler = require(Modules.PairSampler)
 local Constants = require(Modules.Constants)
-local Cryo = require(PluginRoot.Libs.Cryo)
+local Oyrc = require(PluginRoot.Libs.Oyrc)
 local roundUp = Utilities.roundUp
 local roundDown = Utilities.roundDown
 
@@ -305,7 +305,7 @@ function CircleSelector:step(cameraState, inputState)
 		if #lastHovered ~= #newHovered then
 			hoveredChanged = true
 		else
-			local newHoveredSet = Cryo.List.toSet(newHovered)
+			local newHoveredSet = Oyrc.List.toSet(newHovered)
 			for _, part in pairs(lastHovered) do
 				if newHoveredSet[part] == nil then
 					hoveredChanged = true

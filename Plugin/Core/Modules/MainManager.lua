@@ -7,7 +7,7 @@ local Constants = require(Modules.Constants)
 local CircleSelector = require(Modules.CircleSelector)
 local Libs = PluginRoot.Libs
 local Maid = require(Libs.Maid)
-local Cryo = require(Libs.Cryo)
+local Oyrc = require(Libs.Oyrc)
 
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -146,7 +146,7 @@ end
 function MainManager:addToSelection(parts)
 	if #parts == 0 then return end
 
-	local addSet = Cryo.List.toSet(parts)
+	local addSet = Oyrc.List.toSet(parts)
 	for _, part in pairs(self:getCurrentSelection()) do
 		addSet[part] = nil
 	end
@@ -155,14 +155,14 @@ function MainManager:addToSelection(parts)
 		return
 	end
 
-	local newSelection = Cryo.List.join(self:getCurrentSelection(), Cryo.Dictionary.keys(addSet))
+	local newSelection = Oyrc.List.join(self:getCurrentSelection(), Oyrc.Dictionary.keys(addSet))
 	Selection:Set(newSelection)
 end
 
 function MainManager:removeFromSelection(parts)
 	if #parts == 0 then return end
 
-	local currentParts = Cryo.List.toSet(self:getCurrentSelection())
+	local currentParts = Oyrc.List.toSet(self:getCurrentSelection())
 	local changed = false
 	for _, part in pairs(parts) do
 		if currentParts[part] then
@@ -175,7 +175,7 @@ function MainManager:removeFromSelection(parts)
 		return
 	end
 
-	local newSelection = Cryo.Dictionary.keys(currentParts)
+	local newSelection = Oyrc.Dictionary.keys(currentParts)
 	Selection:Set(newSelection)
 end
 
