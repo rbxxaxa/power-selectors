@@ -117,8 +117,7 @@ local gridTraversalOrder do
 
 	local alreadyVisited = {}
 	local fac = SAMPLING_GRID_SIZE
-	while true do
-		if fac < 1 then break end
+	while fac >= 1 do
 		for y = 0, SAMPLING_GRID_SIZE-1 do
 			for x = 0, SAMPLING_GRID_SIZE-1 do
 				if x%fac == 0 and y%fac == 0 then
