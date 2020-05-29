@@ -29,7 +29,7 @@ function SelectorHighlights:render()
 					SurfaceColor3 = color,
 					Color3 = color,
 					SurfaceTransparency = 0.2,
-					LineThickness = 0.1,
+					LineThickness = 0.01,
 				}
 			)
 		end
@@ -44,7 +44,7 @@ function SelectorHighlights:render()
 					SurfaceColor3 = color,
 					Color3 = color,
 					SurfaceTransparency = 0.2,
-					LineThickness = 0.1,
+					LineThickness = 0.01,
 				}
 			)
 		end
@@ -60,7 +60,7 @@ function SelectorHighlights:render()
 						SurfaceColor3 = color,
 						Color3 = color,
 						SurfaceTransparency = 0.2,
-						LineThickness = 0.1,
+						LineThickness = 0.01,
 					}
 				)
 			end
