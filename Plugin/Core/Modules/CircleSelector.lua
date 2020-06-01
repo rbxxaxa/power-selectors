@@ -198,6 +198,7 @@ function CircleSelector.new(initialRadius, initialCameraState, initialInputState
 	self.radius = initialRadius
 	self.cameraState = initialCameraState
 	self.inputState = initialInputState
+	self.started = false
 	self:_resetPending()
 	self:_resetHovered()
 	self:_resetSampleCache()
@@ -252,7 +253,7 @@ function CircleSelector:step(cameraState, inputState)
 		self:_onInputStateChanged(inputState, oldInputState)
 	end
 
-	if self.committed then
+	if self.committed or not self.started then
 		return
 	end
 
@@ -330,8 +331,14 @@ function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
 
 	local wasMouseDown = oldInputState.leftMouseDown
 	local isMouseDown = newInputState.leftMouseDown
-	if not isMouseDown and wasMouseDown then
-		self.committed = true
+	if self.started then
+		if not isMouseDown and wasMouseDown then
+			self.committed = true
+		end
+	else
+		if isMouseDown and not wasMouseDown then
+			self.started = true
+		end
 	end
 end
 
