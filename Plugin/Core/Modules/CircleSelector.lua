@@ -19,12 +19,12 @@ local SAMPLING_GRID_SIZE = Constants.SAMPLING_GRID_SIZE
 local CircleSelector = {}
 CircleSelector.__index = CircleSelector
 
-local DEBUG_CIRCLE_GENERATOR = false
+local DEBUG_GENERATOR = false
 local DEBUG_RAYCAST = false
 local DEBUG_WARN_WHEN_SAMPLER_DONE = false
 
 local debugCircle, debugRaycast
-if DEBUG_RAYCAST or DEBUG_CIRCLE_GENERATOR then
+if DEBUG_RAYCAST or DEBUG_GENERATOR then
 	local CoreGui = game:GetService("CoreGui")
 	local RunService = game:GetService("RunService")
 	local debugCircleGui = Instance.new("ScreenGui")
@@ -148,7 +148,7 @@ local function createCircleGenerator(centerX, centerY, radius)
 				for x = minX+xOffset, maxX, SAMPLE_SPACING*SAMPLING_GRID_SIZE do
 					local distSquared = (x - centerX) ^ 2 + (y - centerY) ^ 2
 					if distSquared < radiusSquared then
-						if DEBUG_CIRCLE_GENERATOR then
+						if DEBUG_GENERATOR then
 							debugCircle(x, y)
 						end
 						coroutine.yield(x, y)
