@@ -23,7 +23,8 @@ local DEBUG_CIRCLE_GENERATOR = false
 local DEBUG_RAYCAST = false
 local DEBUG_WARN_WHEN_SAMPLER_DONE = false
 
-local debugCircle, debugRaycast do
+local debugCircle, debugRaycast
+if DEBUG_RAYCAST or DEBUG_CIRCLE_GENERATOR then
 	local CoreGui = game:GetService("CoreGui")
 	local RunService = game:GetService("RunService")
 	local debugCircleGui = Instance.new("ScreenGui")
