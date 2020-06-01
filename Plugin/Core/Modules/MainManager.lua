@@ -88,7 +88,7 @@ function MainManager.new(plugin)
 				self.mode ~= "none" then
 
 				self.settings.operation = self.settings.operation == "add" and "subtract" or "add"
-				self.selector:reset()
+				self:_resetSelector()
 				self.mainEvent:Fire()
 			elseif keyCode == Enum.KeyCode.C then
 				if inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift) and
@@ -133,7 +133,7 @@ function MainManager:_step(dt)
 			else
 				self:removeFromSelection(pending)
 			end
-			self.selector:reset()
+			self:_resetSelector()
 			updated = true
 		end
 	end
@@ -194,10 +194,24 @@ function MainManager:activate(mode)
 	self.mode = mode
 	self.plugin:Activate(true)
 	if mode == "circle" then
-		self.selector = CircleSelector.new(self.settings.circleRadius, self.cameraState, self.inputState)
+		self.selector = self:_createSelector("circle")
 	end
 
 	self.mainEvent:Fire()
+end
+
+function MainManager:_createSelector(selectorType)
+	if selectorType == "circle" then
+		return CircleSelector.new(self.settings.circleRadius, self.cameraState, self.inputState)
+	end
+end
+
+function MainManager:_resetSelector()
+	local mode = self.mode
+	assert(self.mode ~= "none")
+	if mode == "circle" then
+		self.selector = self:_createSelector("circle")
+	end
 end
 
 function MainManager:deactivate()

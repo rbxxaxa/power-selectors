@@ -355,14 +355,6 @@ function CircleSelector:_resetHovered()
 	self.hoveredSet = {}
 end
 
-function CircleSelector:reset()
-	self:_resetSampleCache()
-	self:_resetSampler()
-	self:_resetPending()
-	self:_resetHovered()
-	self.committed = false
-end
-
 function CircleSelector:getRadius()
 	return self.radius
 end
