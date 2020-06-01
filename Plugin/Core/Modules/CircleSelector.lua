@@ -205,6 +205,10 @@ function CircleSelector.new(initialRadius, initialCameraState, initialInputState
 	self:_resetSampler()
 	self:_updateCursorInfo()
 
+	if not initialInputState.leftMouseDown then
+		self.started = true
+	end
+
 	return self
 end
 
@@ -336,7 +340,7 @@ function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
 			self.committed = true
 		end
 	else
-		if isMouseDown and not wasMouseDown then
+		if not isMouseDown then
 			self.started = true
 		end
 	end
