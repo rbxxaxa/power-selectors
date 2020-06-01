@@ -15,9 +15,10 @@ function CircleSelectorView:render()
 		if mainManager:getMode() ~= "circle" then return end
 		local settings = mainManager:getSettings()
 		local selector = mainManager:getSelector()
-		local inputState = mainManager:getInputState()
+		local cursorInfo = selector:getCursorInfo()
+
 		local circleMarquee = Roact.createElement(CircleMarquee, {
-			position = UDim2.fromOffset(inputState.x, inputState.y),
+			position = UDim2.fromOffset(cursorInfo.x, cursorInfo.y),
 			radius = settings.circleRadius,
 		})
 

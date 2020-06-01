@@ -201,6 +201,7 @@ function CircleSelector.new(initialRadius, initialCameraState, initialInputState
 	self:_resetHovered()
 	self:_resetSampleCache()
 	self:_resetSampler()
+	self:_updateCursorInfo()
 
 	return self
 end
@@ -324,12 +325,24 @@ function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
 
 	self:_resetSampler()
 	self:_resetHovered()
+	self:_updateCursorInfo()
 
 	local wasMouseDown = oldInputState.leftMouseDown
 	local isMouseDown = newInputState.leftMouseDown
 	if not isMouseDown and wasMouseDown then
 		self.committed = true
 	end
+end
+
+function CircleSelector:_updateCursorInfo()
+	self.cursorInfo = {
+		x = self.inputState.x,
+		y = self.inputState.y,
+	}
+end
+
+function CircleSelector:getCursorInfo()
+	return self.cursorInfo
 end
 
 function CircleSelector:getPending()
