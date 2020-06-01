@@ -243,7 +243,6 @@ function CircleSelector:step(cameraState, inputState)
 		return
 	end
 
-	local lastHovered = self.hovered
 	if CameraState.isDifferent(self.cameraState, cameraState) then
 		local oldCameraState = self.cameraState
 		self.cameraState = cameraState
@@ -307,28 +306,8 @@ function CircleSelector:step(cameraState, inputState)
 	if #hoveredToAdd > 0 then
 		table.move(self.hovered, 1, #self.hovered, #hoveredToAdd+1, hoveredToAdd)
 		local newHovered = hoveredToAdd
-		local hoveredChanged = false
-		if #lastHovered ~= #newHovered then
-			hoveredChanged = true
-		else
-			local newHoveredSet = Oyrc.List.toSet(newHovered)
-			for _, part in pairs(lastHovered) do
-				if newHoveredSet[part] == nil then
-					hoveredChanged = true
-					break
-				end
-				newHoveredSet[part] = nil
-			end
-			if next(newHoveredSet) then
-				hoveredChanged = true
-			end
-		end
-		if hoveredChanged then
-			self.hovered = newHovered
-			updated = true
-		else
-			self.hovered = lastHovered
-		end
+		self.hovered = newHovered
+		updated = true
 	end
 	debug.profileend()
 
