@@ -329,10 +329,6 @@ end
 function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
 	if self.committed then return end
 
-	self:_resetSampler()
-	self:_resetHovered()
-	self:_updateCursorInfo()
-
 	local wasMouseDown = oldInputState.leftMouseDown
 	local isMouseDown = newInputState.leftMouseDown
 	if self.started then
@@ -344,6 +340,12 @@ function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
 			self.started = true
 		end
 	end
+
+	if self.committed then return end
+
+	self:_resetSampler()
+	self:_resetHovered()
+	self:_updateCursorInfo()
 end
 
 function CircleSelector:_updateCursorInfo()
