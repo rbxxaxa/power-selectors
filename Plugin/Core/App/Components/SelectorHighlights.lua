@@ -9,6 +9,10 @@ local function getColorForOperation(operation)
 	return operation == "add" and Constants.ADD_COLOR or Constants.SUBTRACT_COLOR
 end
 
+local function checkIsPart(part)
+	return part:IsA("BasePart") and not part:IsA("Terrain")
+end
+
 function SelectorHighlights:render()
 	debug.profilebegin("SelectorHighlights::render")
 	local props = self.props
@@ -51,7 +55,9 @@ function SelectorHighlights:render()
 	if selected then
 		local color = Constants.SELECTED_COLOR
 		for _, part in pairs(selected) do
-			if not boxes[part] and part:IsA("BasePart") and not part:IsA("Terrain") then
+			-- pcalled because IsA can't be done on certain instances
+			local ok, isPart = pcall(checkIsPart, part)
+			if ok and not boxes[part] and isPart then
 				boxes[part] = Roact.createElement(
 					"SelectionBox",
 					{
