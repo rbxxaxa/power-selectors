@@ -239,19 +239,25 @@ function CircleSelector:_calculateSamplerBudget()
 end
 
 function CircleSelector:step(cameraState, inputState)
-	if self.committed then return end
+	if self.committed then
+		return
+	end
 
 	local lastHovered = self.hovered
 	if CameraState.isDifferent(self.cameraState, cameraState) then
+		local oldCameraState = self.cameraState
 		self.cameraState = cameraState
+		self:_onCameraStateChanged(cameraState, oldCameraState)
+	end
+
+	if InputState.isDifferent(self.inputState, inputState) then
+		local oldInputState = self.inputState
 		self.inputState = inputState
-		self:_resetSampleCache()
-		self:_resetSampler()
-		self:_resetHovered()
-	elseif InputState.isDifferent(self.inputState, inputState) then
-		self.inputState = inputState
-		self:_resetSampler()
-		self:_resetHovered()
+		self:_onInputStateChanged(inputState, oldInputState)
+	end
+
+	if self.committed then
+		return
 	end
 
 	local timeStartedSampling = tick()
@@ -326,13 +332,26 @@ function CircleSelector:step(cameraState, inputState)
 	end
 	debug.profileend()
 
-	if not mouseDown and #self.pending > 0 then
-		self.committed = true
-	end
-
 	self.samplerRunningFrames = self.samplerRunningFrames+1
 
 	return updated
+end
+
+function CircleSelector:_onCameraStateChanged(newCameraState, oldCameraState)
+	self:_resetSampleCache()
+	self:_resetSampler()
+	self:_resetHovered()
+end
+
+function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
+	self:_resetSampler()
+	self:_resetHovered()
+
+	local wasMouseDown = oldInputState.leftMouseDown
+	local isMouseDown = newInputState.leftMouseDown
+	if not isMouseDown and wasMouseDown then
+		self.committed = true
+	end
 end
 
 function CircleSelector:getPending()
