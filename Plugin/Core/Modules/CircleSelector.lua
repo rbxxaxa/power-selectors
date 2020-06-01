@@ -5,7 +5,6 @@ local CameraState = require(Modules.CameraState)
 local InputState = require(Modules.InputState)
 local PairSampler = require(Modules.PairSampler)
 local Constants = require(Modules.Constants)
-local Oyrc = require(PluginRoot.Libs.Oyrc)
 local roundUp = Utilities.roundUp
 local roundDown = Utilities.roundDown
 
