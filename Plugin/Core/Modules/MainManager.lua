@@ -5,6 +5,7 @@ local InputState = require(Modules.InputState)
 local CameraState = require(Modules.CameraState)
 local Constants = require(Modules.Constants)
 local CircleSelector = require(Modules.CircleSelector)
+local RectangleSelector = require(Modules.RectangleSelector)
 local Libs = PluginRoot.Libs
 local Maid = require(Libs.Maid)
 local Oyrc = require(Libs.Oyrc)
@@ -40,6 +41,16 @@ function MainManager.new(plugin)
 		end
 	end)
 	self.circleSelectButton = circleSelectButton
+
+	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "")
+	rectangleSelectButton.Click:Connect(function()
+		if self.mode ~= "rectangle" then
+			self:activate("rectangle")
+		else
+			self:deactivate()
+		end
+	end)
+	self.rectangleSelectButton = rectangleSelectButton
 
 	self.mainEvent = Instance.new("BindableEvent")
 	self.maid:GiveTask(self.mainEvent)
@@ -195,6 +206,8 @@ function MainManager:activate(mode)
 	self.plugin:Activate(true)
 	if mode == "circle" then
 		self.selector = self:_createSelector("circle")
+	elseif mode == "rectangle" then
+		self.selector = self:_createSelector("rectangle")
 	end
 
 	self.mainEvent:Fire()
@@ -203,6 +216,8 @@ end
 function MainManager:_createSelector(selectorType)
 	if selectorType == "circle" then
 		return CircleSelector.new(self.settings.circleRadius, self.cameraState, self.inputState)
+	elseif selectorType == "rectangle" then
+		return RectangleSelector.new(self.cameraState, self.inputState)
 	end
 end
 
@@ -211,6 +226,8 @@ function MainManager:_resetSelector()
 	assert(self.mode ~= "none")
 	if mode == "circle" then
 		self.selector = self:_createSelector("circle")
+	elseif mode  == "rectangle" then
+		self.selector = self:_createSelector("rectangle")
 	end
 end
 
