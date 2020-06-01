@@ -239,10 +239,6 @@ function CircleSelector:_calculateSamplerBudget()
 end
 
 function CircleSelector:step(cameraState, inputState)
-	if self.committed then
-		return
-	end
-
 	if CameraState.isDifferent(self.cameraState, cameraState) then
 		local oldCameraState = self.cameraState
 		self.cameraState = cameraState
@@ -317,12 +313,16 @@ function CircleSelector:step(cameraState, inputState)
 end
 
 function CircleSelector:_onCameraStateChanged(newCameraState, oldCameraState)
+	if self.committed then return end
+
 	self:_resetSampleCache()
 	self:_resetSampler()
 	self:_resetHovered()
 end
 
 function CircleSelector:_onInputStateChanged(newInputState, oldInputState)
+	if self.committed then return end
+
 	self:_resetSampler()
 	self:_resetHovered()
 
