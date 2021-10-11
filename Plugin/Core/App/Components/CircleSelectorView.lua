@@ -29,6 +29,9 @@ function CircleSelectorView:render()
 			operation = settings.operation,
 		})
 
+		local mouse = mainManager:getPlugin():GetMouse()
+		mouse.Icon = "rbxasset://SystemCursors/Cross"
+
 		return Roact.createFragment({
 			circleMarquee,
 			selectorHighlights
