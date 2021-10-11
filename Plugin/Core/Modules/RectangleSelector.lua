@@ -171,12 +171,25 @@ local function createRaycastCallback(cameraState)
 	local widthVec = right * worldWidth
 	local heightVec = down * worldHeight
 
+	local raycastParams = RaycastParams.new()
+	local ignoreList = {}
+	raycastParams.FilterDescendantsInstances = ignoreList
+	raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
 	return function(x, y)
 		local origin = topLeft + widthVec * x / width + heightVec * y / height
 		local dir = (origin - position).unit * CAST_DISTANCE
-		local ray = Ray.new(origin, dir)
 
-		local hit = workspace:FindPartOnRay(ray)
+		local hit
+		while true do
+			local result = workspace:Raycast(origin, dir, raycastParams)
+			hit = result.Instance
+			if hit and hit.Transparency == 1 then
+				table.insert(ignoreList, hit)
+				raycastParams.FilterDescendantsInstances = ignoreList
+			else
+				break
+			end
+		end
 		if hit and not hit.Locked then
 			return { hit }
 		else
