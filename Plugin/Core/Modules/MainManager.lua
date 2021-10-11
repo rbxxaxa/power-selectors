@@ -95,20 +95,36 @@ function MainManager.new(plugin)
 		if gameProcessedEvent then return end
 		if inputObject.UserInputType == Enum.UserInputType.Keyboard then
 			local keyCode = inputObject.KeyCode
-			if keyCode == Enum.KeyCode.LeftShift and not inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and
-				self.mode ~= "none" then
+			if 
+				keyCode == Enum.KeyCode.C
+				and inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift)
+				and inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl)
+				and self.mode == "none"
+			then
+				self:activate("circle")
+			elseif 
+				keyCode == Enum.KeyCode.B and
+				inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift) and
+				inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and
+				self.mode == "none"
+			then
+				self:activate("rectangle")
+			end
+		end
+	end))
 
-				self.settings.operation = self.settings.operation == "add" and "subtract" or "add"
-				self:_resetSelector()
+	self.maid:GiveTask(RunService.RenderStepped:Connect(function()
+		if self.mode == "none" then return end
+
+		if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+			if self.settings.operation == "add" then
+				self.settings.operation = "subtract"
 				self.mainEvent:Fire()
-			elseif keyCode == Enum.KeyCode.C then
-				if inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift) and
-					inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) then
-
-					if self.mode == "none" then
-						self:activate("circle")
-					end
-				end
+			end
+		else
+			if self.settings.operation == "subtract" then
+				self.settings.operation = "add"
+				self.mainEvent:Fire()
 			end
 		end
 	end))
