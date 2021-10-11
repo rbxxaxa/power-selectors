@@ -144,10 +144,10 @@ local function createRectangleGenerator(topLeftX, topLeftY, bottomRightX, bottom
 			local yOffset = math.floor(i/SAMPLING_GRID_SIZE) * SAMPLE_SPACING
 			for y = minY+yOffset, maxY, SAMPLE_SPACING*SAMPLING_GRID_SIZE do
 				for x = minX+xOffset, maxX, SAMPLE_SPACING*SAMPLING_GRID_SIZE do
-                    if DEBUG_GENERATOR then
-                        debugRectangle(x, y)
-                    end
-                    coroutine.yield(x, y)
+			if DEBUG_GENERATOR then
+			debugRectangle(x, y)
+			end
+			coroutine.yield(x, y)
 				end
 			end
 		end
@@ -209,16 +209,16 @@ function RectangleSelector:_resetSampleCache()
 end
 
 function RectangleSelector:_resetSampler()
-    if not self.started then
-        self.sampler = nil
-        return
-    end
+	if not self.started then
+	self.sampler = nil
+	return
+	end
 
-    self.raycaster = createRaycastCallback(self.cameraState)
-    local topLeftX = math.min(self.startX, self.inputState.x)
-    local topLeftY = math.min(self.startY, self.inputState.y)
-    local bottomRightX = math.max(self.startX, self.inputState.x)
-    local bottomRightY = math.max(self.startY, self.inputState.y)
+	self.raycaster = createRaycastCallback(self.cameraState)
+	local topLeftX = math.min(self.startX, self.inputState.x)
+	local topLeftY = math.min(self.startY, self.inputState.y)
+	local bottomRightX = math.max(self.startX, self.inputState.x)
+	local bottomRightY = math.max(self.startY, self.inputState.y)
 	self.rectangleGen = createRectangleGenerator(topLeftX, topLeftY, bottomRightX, bottomRightY)
 	self.sampler = PairSampler.create(
 		self.alreadySampled,
@@ -259,7 +259,7 @@ function RectangleSelector:step(cameraState, inputState)
 
 	if self.committed or not self.started then
 		return
-    end
+	end
 
 	local timeStartedSampling = tick()
 	local mouseDown = inputState.leftMouseDown
@@ -297,7 +297,7 @@ function RectangleSelector:step(cameraState, inputState)
 	if #pendingToAdd > 0 then
 		table.move(self.pending, 1, #self.pending, #pendingToAdd+1, pendingToAdd)
 		local newPending = pendingToAdd
-        self.pending = newPending
+	self.pending = newPending
 		updated = true
 	end
 	debug.profileend()
@@ -310,13 +310,13 @@ end
 function RectangleSelector:_onCameraStateChanged(newCameraState, oldCameraState)
 	if self.committed then return end
 
-    self:_resetPending()
+	self:_resetPending()
 	self:_resetSampleCache()
 	self:_resetSampler()
 end
 
 function RectangleSelector:_onInputStateChanged(newInputState, oldInputState)
-    if self.committed then return end
+	if self.committed then return end
 
 	local wasMouseDown = oldInputState.leftMouseDown
 	local isMouseDown = newInputState.leftMouseDown
@@ -326,27 +326,27 @@ function RectangleSelector:_onInputStateChanged(newInputState, oldInputState)
 		end
 	else
 		if isMouseDown and not wasMouseDown then
-            self.started = true
-            self.startX = newInputState.x
-            self.startY = newInputState.y
+			self.started = true
+			self.startX = newInputState.x
+			self.startY = newInputState.y
 		end
-    end
+	end
 
 	if self.committed then return end
 
-    self:_resetPending()
+	self:_resetPending()
 	self:_resetSampler()
 	self:_updateCursorInfo()
 end
 
 function RectangleSelector:_updateCursorInfo()
-    self.cursorInfo = {
-        started = self.started,
-        startX = self.startX,
-        startY = self.startY,
-        x = self.inputState.x,
-        y = self.inputState.y,
-    }
+	self.cursorInfo = {
+		started = self.started,
+		startX = self.startX,
+		startY = self.startY,
+		x = self.inputState.x,
+		y = self.inputState.y,
+	}
 end
 
 function RectangleSelector:getCursorInfo()
