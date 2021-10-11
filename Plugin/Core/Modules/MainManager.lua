@@ -41,14 +41,6 @@ function MainManager.new(plugin)
 			self:deactivate()
 		end
 	end
-	local circleSelectAction = plugin:CreatePluginAction(
-		"CircleSelect",
-		"Circle Select",
-		"Toggle Circle Select",
-		"rbxassetid://7707146577"
-	)
-	self.circleSelectAction = circleSelectAction
-	circleSelectAction.Triggered:Connect(toggleCircleSelect)
 	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "rbxassetid://7707146577")
 	self.circleSelectButton = circleSelectButton
 	circleSelectButton.Click:Connect(toggleCircleSelect)
@@ -62,14 +54,6 @@ function MainManager.new(plugin)
 			self:deactivate()
 		end
 	end
-	local rectangleSelectAction = plugin:CreatePluginAction(
-		"RectangleSelect",
-		"Rectangle Select",
-		"Toggle Rectangle Select",
-		"rbxassetid://7707146459"
-	)
-	self.rectangleSelectAction = rectangleSelectAction
-	rectangleSelectAction.Triggered:Connect(toggleRectangleSelect)
 	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "rbxassetid://7707146459")
 	self.rectangleSelectButton = rectangleSelectButton
 	rectangleSelectButton.Click:Connect(toggleRectangleSelect)
@@ -109,28 +93,6 @@ function MainManager.new(plugin)
 				self.settings.circleRadius = newRadius
 				self.selector:setRadius(self.settings.circleRadius)
 				self.mainEvent:Fire()
-			end
-		end
-	end))
-
-	self.maid:GiveTask(UserInputService.InputBegan:Connect(function(inputObject, gameProcessedEvent)
-		if gameProcessedEvent then return end
-		if inputObject.UserInputType == Enum.UserInputType.Keyboard then
-			local keyCode = inputObject.KeyCode
-			if 
-				keyCode == Enum.KeyCode.C
-				and inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift)
-				and inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl)
-				and self.mode == "none"
-			then
-				self:activate("circle")
-			elseif 
-				keyCode == Enum.KeyCode.B and
-				inputObject:IsModifierKeyDown(Enum.ModifierKey.Shift) and
-				inputObject:IsModifierKeyDown(Enum.ModifierKey.Ctrl) and
-				self.mode == "none"
-			then
-				self:activate("rectangle")
 			end
 		end
 	end))
