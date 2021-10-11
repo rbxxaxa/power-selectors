@@ -182,6 +182,9 @@ local function createRaycastCallback(cameraState)
 		local hit
 		while true do
 			local result = workspace:Raycast(origin, dir, raycastParams)
+			if result == nil then
+				break
+			end
 			hit = result.Instance
 			if hit and hit.Transparency == 1 then
 				table.insert(ignoreList, hit)
