@@ -77,7 +77,7 @@ function MainManager.new(plugin)
 	self.mainEvent = Instance.new("BindableEvent")
 	self.maid:GiveTask(self.mainEvent)
 	self.settings = {
-		circleRadius = 100,
+		circleRadius = 24,
 		operation = "add"
 	}
 	self.cameraState = self:_calculateCurrentCameraState()
