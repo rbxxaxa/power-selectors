@@ -32,25 +32,45 @@ function MainManager.new(plugin)
 	local toolbar = plugin:CreateToolbar("Power Selectors")
 	self.maid:GiveTask(toolbar)
 
-	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "rbxassetid://7707146577")
-	circleSelectButton.Click:Connect(function()
+	local function toggleCircleSelect()
 		if self.mode ~= "circle" then
+			self:deactivate()
 			self:activate("circle")
 		else
 			self:deactivate()
 		end
-	end)
+	end
+	local circleSelectAction = plugin:CreatePluginAction(
+		"CircleSelect",
+		"Circle Select",
+		"Toggle Circle Select",
+		"rbxassetid://7707146577"
+	)
+	self.circleSelectAction = circleSelectAction
+	circleSelectAction.Triggered:Connect(toggleCircleSelect)
+	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "rbxassetid://7707146577")
 	self.circleSelectButton = circleSelectButton
+	circleSelectButton.Click:Connect(toggleCircleSelect)
 
-	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "rbxassetid://7707146459")
-	rectangleSelectButton.Click:Connect(function()
+	local function toggleRectangleSelect()
 		if self.mode ~= "rectangle" then
+			self:deactivate()
 			self:activate("rectangle")
 		else
 			self:deactivate()
 		end
-	end)
+	end
+	local rectangleSelectAction = plugin:CreatePluginAction(
+		"RectangleSelect",
+		"Rectangle Select",
+		"Toggle Rectangle Select",
+		"rbxassetid://7707146459"
+	)
+	self.rectangleSelectAction = rectangleSelectAction
+	rectangleSelectAction.Triggered:Connect(toggleRectangleSelect)
+	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "rbxassetid://7707146459")
 	self.rectangleSelectButton = rectangleSelectButton
+	rectangleSelectButton.Click:Connect(toggleRectangleSelect)
 
 	self.mainEvent = Instance.new("BindableEvent")
 	self.maid:GiveTask(self.mainEvent)
@@ -132,6 +152,8 @@ function MainManager.new(plugin)
 	plugin.Deactivation:Connect(function()
 		self.selector = nil
 		self.mode = "none"
+		self.rectangleSelectButton:SetActive(false)
+		self.circleSelectButton:SetActive(false)
 
 		self.mainEvent:Fire()
 	end)
@@ -221,8 +243,12 @@ function MainManager:activate(mode)
 	self.mode = mode
 	self.plugin:Activate(true)
 	if mode == "circle" then
+		self.circleSelectButton:SetActive(true)
+		self.rectangleSelectButton:SetActive(false)
 		self.selector = self:_createSelector("circle")
 	elseif mode == "rectangle" then
+		self.rectangleSelectButton:SetActive(true)
+		self.circleSelectButton:SetActive(false)
 		self.selector = self:_createSelector("rectangle")
 	end
 
@@ -248,6 +274,8 @@ function MainManager:_resetSelector()
 end
 
 function MainManager:deactivate()
+	self.circleSelectButton:SetActive(false)
+	self.rectangleSelectButton:SetActive(false)
 	self.plugin:Deactivate()
 end
 
