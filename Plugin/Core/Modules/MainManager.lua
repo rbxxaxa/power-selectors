@@ -32,7 +32,7 @@ function MainManager.new(plugin)
 	local toolbar = plugin:CreateToolbar("Power Selectors")
 	self.maid:GiveTask(toolbar)
 
-	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "")
+	local circleSelectButton = toolbar:CreateButton("Circle Select", "Toggle Circle Select", "rbxassetid://7707146577")
 	circleSelectButton.Click:Connect(function()
 		if self.mode ~= "circle" then
 			self:activate("circle")
@@ -42,7 +42,7 @@ function MainManager.new(plugin)
 	end)
 	self.circleSelectButton = circleSelectButton
 
-	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "")
+	local rectangleSelectButton = toolbar:CreateButton("Rectangle Select", "Toggle Rectangle Select", "rbxassetid://7707146459")
 	rectangleSelectButton.Click:Connect(function()
 		if self.mode ~= "rectangle" then
 			self:activate("rectangle")
