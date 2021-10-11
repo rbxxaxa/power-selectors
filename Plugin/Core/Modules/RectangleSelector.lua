@@ -191,10 +191,10 @@ function RectangleSelector.new(initialCameraState, initialInputState)
 
 	self.committed = false
 	self.cameraState = initialCameraState
-    self.inputState = initialInputState
-    self.started = false
-    self.startX = nil
-    self.startY = nil
+	self.inputState = initialInputState
+	self.started = false
+	self.startX = nil
+	self.startY = nil
 	self:_resetPending()
 	self:_resetSampleCache()
 	self:_resetSampler()
