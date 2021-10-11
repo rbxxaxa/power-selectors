@@ -35,6 +35,7 @@ function MainManager.new(plugin)
 	local function toggleCircleSelect()
 		if self.mode ~= "circle" then
 			self:deactivate()
+			task.wait() -- weird workaround that works
 			self:activate("circle")
 		else
 			self:deactivate()
@@ -55,6 +56,7 @@ function MainManager.new(plugin)
 	local function toggleRectangleSelect()
 		if self.mode ~= "rectangle" then
 			self:deactivate()
+			task.wait() -- weird workaround that works
 			self:activate("rectangle")
 		else
 			self:deactivate()
