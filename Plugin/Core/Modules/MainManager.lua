@@ -32,6 +32,22 @@ function MainManager.new(plugin)
 	local toolbar = plugin:CreateToolbar("Power Selectors")
 	self.maid:GiveTask(toolbar)
 
+	local function createButtonAndAction(options)
+		local name = options.name
+		local actionId = options.actionId
+		local buttonId = options.buttonId
+		local actionDescription = options.actionDescription
+		local buttonDescription = options.buttonDescription
+		local callback = options.callback
+		local image = options.image
+
+		local action = plugin:CreatePluginAction(actionId, name, actionDescription, image)
+		action.Triggered:Connect(callback)
+		local button = toolbar:CreateButton(buttonId, buttonDescription, image, name)
+		button.Click:Connect(callback)
+		return action, button
+	end
+
 	local function toggleCircleSelect()
 		if self.mode ~= "circle" then
 			self:deactivate()
@@ -41,17 +57,18 @@ function MainManager.new(plugin)
 			self:deactivate()
 		end
 	end
-	local circleSelectAction = plugin:CreatePluginAction(
-		"PowerSelectors::CircleSelectAction",
-		"Circle Select",
-		"Toggle Circle Select (Recommended: C)",
-		"rbxassetid://7707725859"
-	)
+
+	local circleSelectAction, circleSelectButton = createButtonAndAction({
+		name = "Circle Select",
+		actionId = "PowerSelectors:CircleSelectAction",
+		buttonId = "PowerSelectors:CircleSelectButton",
+		actionDescription = "Toggle Circle Select (Recommended: C)",
+		buttonDescription = "Toggle Circle Select (Do not set a hotkey to this, it will not save! Set it on the other one instead.)",
+		callback = toggleCircleSelect,
+		image = "rbxassetid://7707725859",
+	})
 	self.circleSelectAction = circleSelectAction
-	circleSelectAction.Triggered:Connect(toggleCircleSelect)
-	local circleSelectButton = toolbar:CreateButton("PowerSelectors::CircleSelectButton", "Toggle Circle Select (Do not set a hotkey to this, it will not save! Set it on the other one instead.)", "rbxassetid://7707725859", "Circle Select")
 	self.circleSelectButton = circleSelectButton
-	circleSelectButton.Click:Connect(toggleCircleSelect)
 
 	local function toggleRectangleSelect()
 		if self.mode ~= "rectangle" then
@@ -62,17 +79,17 @@ function MainManager.new(plugin)
 			self:deactivate()
 		end
 	end
-	local rectangleSelectAction = plugin:CreatePluginAction(
-		"PowerSelectors::RectangleSelectAction",
-		"Rectangle Select",
-		"Toggle Rectangle Select (Recommended: B)",
-		"rbxassetid://7707726258"
-	)
+	local rectangleSelectAction, rectangleSelectButton = createButtonAndAction({
+		name = "Rectangle Select",
+		actionId = "PowerSelectors:RectangleSelectAction",
+		buttonId = "PowerSelectors:RectangleSelectButton",
+		actionDescription = "Toggle Rectangle Select (Recommended: B)",
+		buttonDescription = "Toggle Rectangle Select (Do not set a hotkey to this, it will not save! Set it on the other one instead.)",
+		callback = toggleRectangleSelect,
+		image = "rbxassetid://7707726258",
+	})
 	self.rectangleSelectAction = rectangleSelectAction
-	rectangleSelectAction.Triggered:Connect(toggleRectangleSelect)
-	local rectangleSelectButton = toolbar:CreateButton("PowerSelectors::RectangleSelectButton", "Toggle Rectangle Select (Do not set a hotkey to this, it will not save! Set it on the other one instead.)", "rbxassetid://7707726258", "Rectangle Select")
 	self.rectangleSelectButton = rectangleSelectButton
-	rectangleSelectButton.Click:Connect(toggleRectangleSelect)
 
 	self.mainEvent = Instance.new("BindableEvent")
 	self.maid:GiveTask(self.mainEvent)
