@@ -31,6 +31,9 @@ function RectangleSelectorView:render()
 			operation = settings.operation,
 		})
 
+		local mouse = mainManager:getPlugin():GetMouse()
+		mouse.Icon = "rbxasset://SystemCursors/Cross"
+
 		return Roact.createFragment(children)
 	end)
 end

@@ -302,4 +302,8 @@ function MainManager:getSelector()
 	return self.selector
 end
 
+function MainManager:getPlugin()
+	return self.plugin
+end
+
 return MainManager
