@@ -13,7 +13,6 @@ local Oyrc = require(Libs.Oyrc)
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Selection = game:GetService("Selection")
-local CurrentCamera = workspace.CurrentCamera
 
 local MainManager = {}
 MainManager.__index = MainManager
@@ -233,7 +232,7 @@ function MainManager:_calculateCurrentInputState()
 end
 
 function MainManager:_calculateCurrentCameraState()
-	return CameraState.create(CurrentCamera)
+	return CameraState.create(workspace.CurrentCamera)
 end
 
 function MainManager:activate(mode)
