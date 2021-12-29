@@ -44,8 +44,9 @@ function ConfigBox:render()
 			}, {
 				List = Roact.createElement("UIListLayout", {
 					Padding = UDim.new(0, 4),
-				})
-			}, props[Roact.Children])
+				}),
+				Roact.createFragment(props[Roact.Children])
+			})
 
 			return children
 		end)()
