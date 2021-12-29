@@ -261,6 +261,7 @@ end
 
 function MainManager:_resetSelector()
 	local mode = self.mode
+	-- selene: allow(incorrect_standard_library_use)
 	assert(self.mode ~= "none")
 	if mode == "circle" then
 		self.selector = self:_createSelector("circle")
