@@ -8,8 +8,9 @@ local CoreGui = game:GetService("CoreGui")
 local PluginMain = {}
 
 function PluginMain.start(plugin)
-	local mainGui = Instance.new("ScreenGui", CoreGui)
+	local mainGui = Instance.new("ScreenGui")
 	mainGui.Name = "PowerSelectors"
+	mainGui.Parent = CoreGui
 
 	local mainManager = MainManager.new(plugin)
 	local app = Roact.createElement(MainApp, {mainManager = mainManager})
@@ -21,6 +22,7 @@ function PluginMain.start(plugin)
 		mainManager:Destroy()
 		Roact.unmount(handle)
 	end)
+
 end
 
 return PluginMain
