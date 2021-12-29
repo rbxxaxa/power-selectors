@@ -6,6 +6,7 @@ local MainContext = require(Contexts.MainContext)
 local Components = App.Components
 local RectangleMarquee = require(Components.RectangleMarquee)
 local SelectorHighlights = require(Components.SelectorHighlights)
+local ConfigBox = require(Components.ConfigBox)
 
 local RectangleSelectorView = Roact.PureComponent:extend("RectangleSelectorView")
 
@@ -34,34 +35,8 @@ function RectangleSelectorView:render()
 		local mouse = mainManager:getPlugin():GetMouse()
 		mouse.Icon = "rbxasset://SystemCursors/Cross"
 
-		children.hint = Roact.createElement("Frame", {
-			AutomaticSize = Enum.AutomaticSize.Y,
-			Size = UDim2.new(1, 0, 0, 24),
-			Position = UDim2.new(0, 0, 0, 0),
-			BackgroundTransparency = 0.5,
-			BackgroundColor3 = Color3.new(0, 0, 0),
-			BorderSizePixel = 0,
-		}, {
-			Roact.createElement("TextLabel", {
-				Text = "<b>Rectangle Select:</b> Drag across the screen to select parts. Hold <b>Shift</b> to remove parts from the current selection. Activate Rectangle Select again to stop.",
-				RichText = true,
-				Size = UDim2.new(1, 0, 0, 16),
-				AutomaticSize = Enum.AutomaticSize.Y,
-				BackgroundTransparency = 1,
-				TextSize = 16,
-				TextWrapped = true,
-				Font = Enum.Font.SourceSans,
-				TextColor3 = Color3.new(1, 1, 1),
-				TextStrokeTransparency = 0,
-				TextStrokeColor3 = Color3.new(0, 0, 0),
-				TextXAlignment = Enum.TextXAlignment.Left,
-			}),
-			Roact.createElement("UIPadding", {
-				PaddingLeft = UDim.new(0, 4),
-				PaddingRight = UDim.new(0, 4),
-				PaddingTop = UDim.new(0, 4),
-				PaddingBottom = UDim.new(0, 4),
-			})
+		children.Config = Roact.createElement(ConfigBox, {
+			title = "Rectangle Selector",
 		})
 
 		return Roact.createFragment(children)
