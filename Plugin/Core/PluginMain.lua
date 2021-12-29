@@ -9,6 +9,7 @@ local PluginMain = {}
 
 function PluginMain.start(plugin)
 	local mainGui = Instance.new("ScreenGui", CoreGui)
+	mainGui.Name = "PowerSelectors"
 
 	local mainManager = MainManager.new(plugin)
 	local app = Roact.createElement(MainApp, {mainManager = mainManager})
